@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>创建活动</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,
+minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	</head>
+	<script type="text/javascript">
+		function setRem() {
+			var html = document.documentElement;
+			var hWidth = html.getBoundingClientRect().width;
+			html.style.fontSize = hWidth / 16 + 'px';
+		}
+		setRem();
+	</script>
+	<link rel="stylesheet" href="./css/createactivities.css" />
+	<link href="css/LCalendar.min.css" rel="stylesheet">
+	<script src="js/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="js/LCalendar.js"></script>
+
+	<body>
+		<form action="" method="post" onsubmit="return inputselect()" enctype="multipartform-data">
+			<div style="height: auto;position: relative;margin-bottom: -2rem;">
+				<div class="inputdivbox">
+					<span>产品/服务名称</span>
+					<div class="inputbox">
+						<input id="name" type="text" placeholder="请输入名称" />
+					</div>
+				</div>
+				<div class="inputdivbox">
+					<span>产品/服务图片</span>
+					<img class='imgbutton' src="images/dct.png" alt="" onclick="$('#imgfile').click()" />
+					<input type="file" onchange="previewImage(this)" id="imgfile" />
+					<div class="inputbox inputboximg">
+						<img src="1营销.fw.png" alt="" id="addimg" />
+					</div>
+				</div>
+				<div class="inputdivbox">
+					<ul class="inputul">
+						<li>
+							<span>售价（元）</span>
+							<div class="inputbox">
+								<input type="number" id="price" placeholder="请输入售价" />
+							</div>
+						</li>
+						<li>
+							<span>底价（元）</span>
+							<div class="inputbox">
+								<input type="number" id="floorprice" placeholder="请输入底价" />
+							</div>
+						</li>
+						<li>
+							<span>砍价区间（最低额）</span>
+							<div class="inputbox">
+								<input type="number" id="bargaining" placeholder="请输入砍价最低额" />
+							</div>
+						</li>
+						<li>
+							<span>砍价区间（最高额）</span>
+							<div class="inputbox">
+								<input type="number" id="topbargaining" placeholder="请输入砍价最高额" />
+							</div>
+						</li>
+					</ul>
+				</div>
+				<div class="inputdivbox ">
+					<span>截止时间</span>
+					<div class="inputbox timeinputborder">
+						<span id="start_date">2017-11-13</span>
+						<img id="start_date" class='timebutton' src="images/rq.png" alt="" />
+						<input type="hidden" value="" id="time" />
+					</div>
+				</div>
+				<div class="introduced inputdivbox">
+					<span>编辑介绍</span>
+					<div class="edit">
+						<textarea id="edit" name="" placeholder="请输入……"></textarea>
+					</div>
+					<div class="z_photo">
+						<section class="up-section" cc="0">
+							<span class="close-upimg" style="display: none;">-</span>
+							<img src="images/ct.png" onclick="$('.file').eq(0).click()" class="add-img upimg" />
+							<input type="file" name="file" class="file" value="" accept="image/jpg,image/jpeg,image/png,image/bmp" style="display: none;" onchange="previewImages(this,0)" />
+						</section>
+					</div>
+					<aside class="mask works-mask">
+						<div class="mask-content">
+							<p class="del-p ">您确定要删除作品图片吗？</p>
+							<p class="check-p"><span class="del-com wsdel-ok">确定</span><span class="wsdel-no">取消</span></p>
+						</div>
+					</aside>
+				</div>
+			</div>
+			<input type="submit" value="确定发布" />
+		</form>
+		<h1 class="alertbox">
+		</h1>
+	</body>
+	<script>
+		function previewImages(file, a) {
+			var MAXWIDTH = 90;
+			var MAXHEIGHT = 90;
+			if(file.files && file.files[0]) {
+				$(".close-upimg").eq(a).show();
+				var img = document.getElementsByClassName("upimg")[a];
+				img.classList.remove("add-img");
+				img.onload = function() {
+					var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
+					img.width = rect.width;
+					img.height = rect.height;
+				}
+				var reader = new FileReader();
+				reader.onload = function(evt) {
+					img.src = evt.target.result;
+				}
+				reader.readAsDataURL(file.files[0]);
+			}
+			var c = a + 1;
+			if($(".up-section").length < 4) {
+				var $section = $(`<section class='up-section' ` + "cc=" + c + `><span class="close-upimg" style="display: none;">-</span><img  src="images/ct.png" onclick="$('.file').eq(` + c + `).click()" class="add-img upimg"/><input type="file" name="file" class="file" value="" accept="image/jpg,image/jpeg,image/png,image/bmp"  style="display: none;"  onchange="previewImages(this,` + c + `)" /></section>`);
+				$section.appendTo(".z_photo");
+			}
+		}
+		$(".z_photo").delegate(".close-upimg", "click", function() {
+			$(".works-mask").show();
+			$(".wsdel-ok").attr("cc", $(".close-upimg").index($(this)))
+
+		});
+		$(".wsdel-no").click(function() {
+			$(".works-mask").hide();
+		});
+		$(".wsdel-ok").click(function() {
+			var index = $(this).attr("cc");		
+			$(".works-mask").hide();
+			var c = parseInt($(".up-section:last").attr("cc"));
+			$(".up-section").eq(index).remove();
+			if($(".add-img").length == 0){
+				var $section = $(`<section class='up-section' ` + "cc=" + c + `><span class="close-upimg" style="display: none;">-</span><img  src="images/ct.png" onclick="$('.file').eq(`+c+`).click()" class="add-img upimg"/><input type="file" name="file" class="file" value="" accept="image/jpg,image/jpeg,image/png,image/bmp"  style="display: none;"  onchange="previewImages(this,` + c + `)" /></section>`);
+				$section.appendTo(".z_photo");
+			}
+			for(var i=0;i<$(".up-section").length;i++){
+					$(".up-section").eq(i).attr("cc",i)
+					$(".up-section").eq(i).children("img").attr("onclick","$('.file').eq("+i+").click()");
+					$(".up-section").eq(i).children("input").attr("onchange","previewImages(this,"+i+")");
+				}
+		})
+		var calendar = new LCalendar();
+		calendar.init({
+			'trigger': '#start_date', //标签id
+			'type': 'date', //date 调出日期选择 datetime 调出日期时间选择 time 调出时间选择 ym 调出年月选择,
+			'minDate': (new Date().getFullYear() - 3) + '-' + 1 + '-' + 1, //最小日期
+			'maxDate': (new Date().getFullYear() + 3) + '-' + 12 + '-' + 31 //最大日期
+		});
+
+		function previewImage(file) {
+			var MAXWIDTH = 90;
+			var MAXHEIGHT = 90;
+			if(file.files && file.files[0]) {
+				var img = document.getElementById('addimg');
+				img.style.display = "block";
+				img.style.paddingBottom = "0.5rem";
+				img.onload = function() {
+					var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
+					img.width = rect.width;
+					img.height = rect.height;
+					img.style.marginTop = rect.top + 'px';
+				}
+				var reader = new FileReader();
+				reader.onload = function(evt) {
+					img.src = evt.target.result;
+				}
+				reader.readAsDataURL(file.files[0]);
+			}
+		}
+
+		function clacImgZoomParam(maxWidth, maxHeight, width, height) {
+			var param = {
+				top: 0,
+				left: 0,
+				width: width,
+				height: height
+			};
+			if(width > maxWidth || height > maxHeight) {
+				rateWidth = width / maxWidth;
+				rateHeight = height / maxHeight;
+
+				if(rateWidth > rateHeight) {
+					param.width = maxWidth;
+					param.height = Math.round(height / rateWidth);
+				} else {
+					param.width = Math.round(width / rateHeight);
+					param.height = maxHeight;
+				}
+			}
+			param.left = Math.round((maxWidth - param.width) / 2);
+			param.top = Math.round((maxHeight - param.height) / 2);
+			return param;
+		}
+
+		function inputselect() {
+			if($("#name").val() != "") {
+				if($("#imgfile").val() != "") {
+					if($("#price").val() != "") {
+						if($("#floorprice").val() != "") {
+							if($("bargaining").val() != "") {
+								if($("#topbargaining").val() != "") {
+									if($("#time").val() != "") {
+										if($("#edit").val() != "") {
+											return true
+										} else {
+											$(".alertbox").css({
+												"display": "block"
+											}).text("请输入介绍 ")
+											setTimeout(function() {
+												document.querySelector('.alertbox').style.display = 'none';
+											}, 1000);
+											return false;
+										}
+									} else {
+										$(".alertbox").css({
+											"display": "block"
+										}).text("请选取截至时间 ")
+										setTimeout(function() {
+											document.querySelector('.alertbox').style.display = 'none';
+										}, 1000);
+										return false;
+									}
+								} else {
+									$(".alertbox").css({
+										"display": "block"
+									}).text("请输入砍价最高额 ")
+									setTimeout(function() {
+										document.querySelector('.alertbox').style.display = 'none';
+									}, 1000);
+									return false;
+								}
+							} else {
+								$(".alertbox").css({
+									"display": "block"
+								}).text("请输入砍价最低额 ")
+								setTimeout(function() {
+									document.querySelector('.alertbox').style.display = 'none';
+								}, 1000);
+								return false;
+							}
+						} else {
+							$(".alertbox").css({
+								"display": "block"
+							}).text("请输入底价 ")
+							setTimeout(function() {
+								document.querySelector('.alertbox').style.display = 'none';
+							}, 1000);
+							return false;
+						}
+					} else {
+						$(".alertbox").css({
+							"display": "block"
+						}).text("请输入售价 ")
+						setTimeout(function() {
+							document.querySelector('.alertbox').style.display = 'none';
+						}, 1000);
+						return false;
+					}
+				} else {
+					$(".alertbox").css({
+						"display": "block"
+					}).text("请添加产品/服务图片 ")
+					setTimeout(function() {
+						document.querySelector('.alertbox').style.display = 'none';
+					}, 1000);
+					return false;
+				}
+			} else {
+				$(".alertbox").css({
+					"display": "block"
+				}).text("请添加名称 ")
+				setTimeout(function() {
+					document.querySelector('.alertbox').style.display = 'none';
+				}, 1000);
+				return false;
+			}
+		}
+	</script>
+
+</html>
