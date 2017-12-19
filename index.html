@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>发表评论</title>
     <meta name="viewport" content="width=device-width,initial-scale=1,
-minimum-scale=1,maximum-scale=1,user-scalable=no" />
+minimum-scale=1,maximum-scale=1,user-scalable=no"/>
 </head>
 <script type="text/javascript">
     function setRem() {
@@ -13,18 +13,13 @@ minimum-scale=1,maximum-scale=1,user-scalable=no" />
         var hWidth = html.getBoundingClientRect().width;
         html.style.fontSize = hWidth / 16 + 'px';
     }
+
     setRem();
 </script>
-<link rel="stylesheet" href="./comment.css" />
-<script src=".jquery-1.9.1.js"></script>
+<link rel="stylesheet" href="./comment.css"/>
+<script src="./jquery-1.9.1.js"></script>
 
 <body>
-<div class="title">
-    <a href="" class='withdraw'>
-        <img src="./bc.png" alt="" />
-    </a>
-    贷款计算
-</div>
 <form action="" method="post" enctype="multipart/form-data">
     <div class="introduced inputdivbox">
         <div class="edit">
@@ -33,8 +28,9 @@ minimum-scale=1,maximum-scale=1,user-scalable=no" />
         <div class="z_photo">
             <section class="up-section" cc="0">
                 <span class="close-upimg" style="display: none;">-</span>
-                <img src="./ct.png" onclick="$('.file').eq(0).click()" class="add-img upimg" />
-                <input type="file" name="" class="file" value="" accept="image/jpg,image/jpeg,image/png,image/bmp" style="display: none;" onchange="previewImages(this,0)" />
+                <img src="./ct.png" onclick="$('.file').eq(0).click()" class="add-img upimg"/>
+                <input type="file" name="" class="file" value="" accept="image/jpg,image/jpeg,image/png,image/bmp"
+                       style="display: none;" onchange="previewImages(this,0)"/>
             </section>
         </div>
         <aside class="mask works-mask">
@@ -45,7 +41,7 @@ minimum-scale=1,maximum-scale=1,user-scalable=no" />
         </aside>
     </div>
 
-    <input type="submit" name="submit" value="确定发布" />
+    <input type="submit" name="submit" value="确定发布"/>
 </form>
 <h1 class="alertbox">
 </h1>
@@ -54,17 +50,17 @@ minimum-scale=1,maximum-scale=1,user-scalable=no" />
     function previewImages(file, a) {
         var MAXWIDTH = 90;
         var MAXHEIGHT = 90;
-        if(file.files && file.files[0]) {
+        if (file.files && file.files[0]) {
             $(".close-upimg").eq(a).show();
             var img = document.getElementsByClassName("upimg")[a];
             img.classList.remove("add-img");
-            img.onload = function() {
+            img.onload = function () {
                 var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
                 img.width = rect.width;
                 img.height = rect.height;
             }
             var reader = new FileReader();
-            reader.onload = function(evt) {
+            reader.onload = function (evt) {
                 img.src = evt.target.result;
             }
             reader.readAsDataURL(file.files[0]);
@@ -72,29 +68,30 @@ minimum-scale=1,maximum-scale=1,user-scalable=no" />
         var inputName = "file" + "[" + $('.up-section').eq(a).attr('cc') + "]";
         $(".up-section").eq(a).children("input").attr("name", inputName);
         var c = a + 1;
-        if($(".up-section").length < 4 & $(".up-section").length - 1 == a) {
+        if ($(".up-section").length < 4 & $(".up-section").length - 1 == a) {
             var $section = $(`<section class='up-section' ` + "cc=" + c + `><span class="close-upimg" style="display: none;">-</span><img  src="./ct.png" onclick="$('.file').eq(` + c + `).click()" class="add-img upimg"/><input type="file" name="" class="file" value="" accept="image/jpg,image/jpeg,image/png,image/bmp"  style="display: none;"  onchange="previewImages(this,` + c + `)" /></section>`);
             $section.appendTo(".z_photo");
         }
     }
-    $(".z_photo").delegate(".close-upimg", "click", function() {
+
+    $(".z_photo").delegate(".close-upimg", "click", function () {
         $(".works-mask").show();
         $(".wsdel-ok").attr("cc", $(".close-upimg").index($(this)))
 
     });
-    $(".wsdel-no").click(function() {
+    $(".wsdel-no").click(function () {
         $(".works-mask").hide();
     });
-    $(".wsdel-ok").click(function() {
+    $(".wsdel-ok").click(function () {
         var index = $(this).attr("cc");
         $(".works-mask").hide();
         var c = parseInt($(".up-section:last").attr("cc"));
         $(".up-section").eq(index).remove();
-        if($(".add-img").length == 0) {
+        if ($(".add-img").length == 0) {
             var $section = $(`<section class='up-section' ` + "cc=" + c + `><span class="close-upimg" style="display: none;">-</span><img  src="./ct.png" onclick="$('.file').eq(` + c + `).click()" class="add-img upimg"/><input type="file" name="" class="file" value="" accept="image/jpg,image/jpeg,image/png,image/bmp"  style="display: none;"  onchange="previewImages(this,` + c + `)" /></section>`);
             $section.appendTo(".z_photo");
         }
-        for(var i = 0; i < $(".up-section").length; i++) {
+        for (var i = 0; i < $(".up-section").length; i++) {
             $(".up-section").eq(i).attr("cc", i)
             $(".up-section").eq(i).children("img").attr("onclick", "$('.file').eq(" + i + ").click()");
             $(".up-section").eq(i).children("input").attr("onchange", "previewImages(this," + i + ")");
@@ -110,11 +107,11 @@ minimum-scale=1,maximum-scale=1,user-scalable=no" />
             width: width,
             height: height
         };
-        if(width > maxWidth || height > maxHeight) {
+        if (width > maxWidth || height > maxHeight) {
             rateWidth = width / maxWidth;
             rateHeight = height / maxHeight;
 
-            if(rateWidth > rateHeight) {
+            if (rateWidth > rateHeight) {
                 param.width = maxWidth;
                 param.height = Math.round(height / rateWidth);
             } else {
