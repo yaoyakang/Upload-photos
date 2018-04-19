@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>多图片压缩上传</title>
+    <script src="jquery-1.9.1.js"></script>
+</head>
+<body>
+
+<div id="z_photos">
+    <input type="file" name="file" onchange="inputMore(this)" id="file" class="file" value=""
+           accept="image/jpg,image/jpeg,image/png,image/bmp"
+           multiple="multiple"/>
+</div>
+
+<script>
+    function convertImgToBase64(url, callback, outputFormat) {
+        var canvas = document.createElement('CANVAS');
+        var ctx = canvas.getContext('2d');
+        var img = new Image;
+        img.crossOrigin = 'Anonymous';
+        img.onload = function () {
+            var width = img.width;
+            var height = img.height;
+            // 按比例压缩4倍
+//            var rate = (width<height ? width/height : height/width)/1;
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height, 0, 0, width, height);
+            var dataURL = canvas.toDataURL(outputFormat || 'image/jpeg', 0.1);
+            callback.call(this, dataURL);
+            canvas = null;
+        };
+        img.src = url;
+
+    }
+
+    function getObjectURL(file) {
+        var url = null;
+        if (window.createObjectURL != undefined) {  // basic
+            url = window.createObjectURL(file);
+        } else if (window.URL != undefined) {       // mozilla(firefox)
+            url = window.URL.createObjectURL(file);
+        } else if (window.webkitURL != undefined) { // web_kit or chrome
+            url = window.webkitURL.createObjectURL(file);
+        }
+        return url;
+    }
+
+    function clacImgZoomParam(maxWidth, maxHeight, width, height) {
+        var param = {
+            top: 0,
+            left: 0,
+            width: width,
+            height: height
+        };
+        if (width > maxWidth || height > maxHeight) {
+            rateWidth = width / maxWidth;
+            rateHeight = height / maxHeight;
+
+            if (rateWidth > rateHeight) {
+                param.width = maxWidth;
+                param.height = Math.round(height / rateWidth);
+            } else {
+                param.width = Math.round(width / rateHeight);
+                param.height = maxHeight;
+            }
+        }
+        param.left = Math.round((maxWidth - param.width) / 2);
+        param.top = Math.round((maxHeight - param.height) / 2);
+        return param;
+    }
+
+    function inputMore(obj) {
+        var fileList = obj.files;
+        if($(".addbox").length+fileList.length>5){
+            alert("你选择的图片不能超过5个")
+        }
+        for (var i = 0; i < fileList.length; i++) {
+            var imageurl = getObjectURL(fileList[i]);
+            convertImgToBase64(imageurl, function (base64img) {
+                var maxwidth = 90;
+                var maxheight = 90;
+                var addDom = $("<div class='addbox'></div>")
+                $("#z_photos").append(addDom)
+                var img = $("<img />")
+                img.attr("src", base64img)
+                addDom.append(img)
+                var addInput = $("<input type='hidden' />");
+                addInput.val(base64img)
+                addDom.append(addInput)
+                var icon = $("<img  class='addicon' src='a7.png'/>")
+                addDom.append(icon)
+                img.onload = function () {
+                    img
+                    var rect = clacimgzoomparam(maxwidth, maxheight, img.offsetwidth, img.offsetheight);
+                    img.width = rect.width;
+                    img.height = rect.height;
+                }
+            }, 'image/jpeg');
+            event.preventDefault();
+        }
+    }
+    $("#z_photos").on("click",".addicon",function () {
+        $(this).parent().remove()
+    })
+</script>
+</body>
+</html>
