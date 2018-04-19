@@ -14,7 +14,7 @@
 </div>
 
 <script>
-    function convertImgToBase64(url, callback, outputFormat) {
+    function convertImgToBase64(url, callback, outputFormat,num) {
         var canvas = document.createElement('CANVAS');
         var ctx = canvas.getContext('2d');
         var img = new Image;
@@ -27,7 +27,7 @@
             canvas.width = width;
             canvas.height = height;
             ctx.drawImage(img, 0, 0, width, height, 0, 0, width, height);
-            var dataURL = canvas.toDataURL(outputFormat || 'image/jpeg', 0.1);
+            var dataURL = canvas.toDataURL(outputFormat || 'image/jpeg', num);
             callback.call(this, dataURL);
             canvas = null;
         };
@@ -105,7 +105,7 @@
                         img.width = rect.width;
                         img.height = rect.height;
                     }
-                }, 'image/jpeg');
+                }, 'image/jpeg',0.1);
                 event.preventDefault();
             }
         }
