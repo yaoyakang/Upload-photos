@@ -14,11 +14,11 @@
 </div>
 
 <script>
-    function convertimgtobase64(url, callback, outputformat) {
-        var canvas = document.createelement('canvas');
-        var ctx = canvas.getcontext('2d');
-        var img = new image;
-        img.crossorigin = 'anonymous';
+    function convertImgToBase64(url, callback, outputFormat) {
+        var canvas = document.createElement('CANVAS');
+        var ctx = canvas.getContext('2d');
+        var img = new Image;
+        img.crossOrigin = 'Anonymous';
         img.onload = function () {
             var width = img.width;
             var height = img.height;
@@ -26,80 +26,87 @@
 //            var rate = (width<height ? width/height : height/width)/1;
             canvas.width = width;
             canvas.height = height;
-            ctx.drawimage(img, 0, 0, width, height, 0, 0, width, height);
-            var dataurl = canvas.todataurl(outputformat || 'image/jpeg', 0.5);
-            callback.call(this, dataurl);
+            ctx.drawImage(img, 0, 0, width, height, 0, 0, width, height);
+            var dataURL = canvas.toDataURL(outputFormat || 'image/jpeg', 0.1);
+            callback.call(this, dataURL);
             canvas = null;
         };
         img.src = url;
 
     }
 
-    function getobjecturl(file) {
+    function getObjectURL(file) {
         var url = null;
-        if (window.createobjecturl != undefined) {  // basic
-            url = window.createobjecturl(file);
-        } else if (window.url != undefined) {       // mozilla(firefox)
-            url = window.url.createobjecturl(file);
-        } else if (window.webkiturl != undefined) { // web_kit or chrome
-            url = window.webkiturl.createobjecturl(file);
+        if (window.createObjectURL != undefined) {  // basic
+            url = window.createObjectURL(file);
+        } else if (window.URL != undefined) {       // mozilla(firefox)
+            url = window.URL.createObjectURL(file);
+        } else if (window.webkitURL != undefined) { // web_kit or chrome
+            url = window.webkitURL.createObjectURL(file);
         }
         return url;
     }
 
-    function clacimgzoomparam(maxwidth, maxheight, width, height) {
+    function clacImgZoomParam(maxWidth, maxHeight, width, height) {
         var param = {
             top: 0,
             left: 0,
             width: width,
             height: height
         };
-        if (width > maxwidth || height > maxheight) {
-            ratewidth = width / maxwidth;
-            rateheight = height / maxheight;
+        if (width > maxWidth || height > maxHeight) {
+            rateWidth = width / maxWidth;
+            rateHeight = height / maxHeight;
 
-            if (ratewidth > rateheight) {
-                param.width = maxwidth;
-                param.height = math.round(height / ratewidth);
+            if (rateWidth > rateHeight) {
+                param.width = maxWidth;
+                param.height = Math.round(height / rateWidth);
             } else {
-                param.width = math.round(width / rateheight);
-                param.height = maxheight;
+                param.width = Math.round(width / rateHeight);
+                param.height = maxHeight;
             }
         }
-        param.left = math.round((maxwidth - param.width) / 2);
-        param.top = math.round((maxheight - param.height) / 2);
+        param.left = Math.round((maxWidth - param.width) / 2);
+        param.top = Math.round((maxHeight - param.height) / 2);
         return param;
     }
 
-    function inputmore(obj) {
-        var filelist = obj.files;
-        if ($(".addbox").length + filelist.length > 5) {
+    function nameSort() {
+        for (var i = 0; i < $(".addbox").length; i++) {
+            $(".addbox").eq(i).find("input").attr("name", i)
+        }
+    }
+
+    function inputMore(obj) {
+        var fileList = obj.files;
+        if ($(".addbox").length + fileList.length > 5) {
             alert("你选择的图片不能超过5个")
         } else {
-            for (var i = 0; i < filelist.length; i++) {
-                var imageurl = getobjecturl(filelist[i]);
-                convertimgtobase64(imageurl, function (base64img) {
+            for (var i = 0; i < fileList.length; i++) {
+                var imageurl = getObjectURL(fileList[i]);
+                convertImgToBase64(imageurl, function (base64img) {
                     var maxwidth = 90;
                     var maxheight = 90;
-                    var adddom = $("<div class='addbox'></div>")
-                    $("#z_photos").append(adddom)
+                    var addDom = $("<div class='addbox'></div>")
+                    $("#z_photos").append(addDom)
                     var img = $("<img />")
                     img.attr("src", base64img)
-                    adddom.append(img)
-                    var addinput = $("<input type='hidden' />");
-                    addinput.val(base64img)
-                    adddom.append(addinput)
+                    addDom.append(img)
+                    var addInput = $("<input type='hidden' name/>");
+                    addInput.val(base64img)
+                    addDom.append(addInput)
                     var icon = $("<img  class='addicon' src='a7.png'/>")
-                    adddom.append(icon)
+                    addDom.append(icon)
+                    nameSort()
                     img.onload = function () {
-                        var maxwidth = 90;
-                        var maxheight = 90;
+                        var MAXWIDTH = 90;
+                        var MAXHEIGHT = 90;
                         var rect = clacimgzoomparam(maxwidth, maxheight, img.offsetwidth, img.offsetheight);
                         img.width = rect.width;
                         img.height = rect.height;
                     }
                 }, 'image/jpeg');
-                event.preventdefault();
+                event.preventDefault();
             }
         }
 
@@ -107,6 +114,7 @@
 
     $("#z_photos").on("click", ".addicon", function () {
         $(this).parent().remove()
+        nameSort()
     })
 </script>
 </body>
