@@ -88,7 +88,7 @@
                     var maxwidth = 90;
                     var maxheight = 90;
                     var addDom = $("<div class='addbox'></div>")
-                    $("#z_photos").append(addDom)
+                    $("#z_photos").prepend(addDom)
                     var img = $("<img />")
                     img.attr("src", base64img)
                     addDom.append(img)
